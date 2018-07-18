@@ -24,12 +24,14 @@ class Router extends BasicService {
         await this.stopNested();
     }
 
-    _subscribe({ user, params: { key } }) {
-        this.emit('subscribe', user, key);
+    async _subscribe({ user, params: { key, deviceType } }) {
+        this.emit('subscribe', user, key, deviceType);
+        return 'Ok';
     }
 
-    _transfer(user, type, data) {
+    async _transfer(user, type, data) {
         this.emit('transfer', user, type, data);
+        return 'Ok';
     }
 }
 
