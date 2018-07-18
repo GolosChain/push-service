@@ -4,6 +4,7 @@ const logger = core.Logger;
 const stats = core.Stats.client;
 const BasicService = core.service.Basic;
 const MongoDB = core.service.MongoDB;
+const Router = require('./service/Router');
 const Registrator = require('./service/Registrator');
 const Pusher = require('./service/Pusher');
 
@@ -11,8 +12,13 @@ class Main extends BasicService {
     constructor() {
         super();
 
+        const mongo = new MongoDB();
+        const router = new Router();
+        const pusher = new Pusher(router);
+        const registrator = new Registrator(router);
+
         this.printEnvBasedConfig(env);
-        this.addNested(new MongoDB(), new Pusher(), new Registrator());
+        this.addNested(mongo, router, pusher, registrator);
         this.stopOnExit();
     }
 
