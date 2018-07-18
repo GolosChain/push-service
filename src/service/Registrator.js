@@ -4,12 +4,23 @@ const logger = core.Logger;
 const BasicService = core.service.Basic;
 
 class Registrator extends BasicService {
+    constructor(router) {
+        super();
+
+        this._router = router;
+    }
+
     async start() {
-        // TODO -
+        this._router.on('subscribe', this._registerSubscribe);
     }
 
     async stop() {
         // TODO -
+    }
+
+    _registerSubscribe(user, key) {
+        // TODO -
+        // TODO filtrate max subscribe count (ENV)
     }
 }
 

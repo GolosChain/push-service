@@ -24,8 +24,8 @@ class Router extends BasicService {
         await this.stopNested();
     }
 
-    _subscribe({ user, params: { sign } }) {
-        this.emit('subscribe', user, sign);
+    _subscribe({ user, params: { key } }) {
+        this.emit('subscribe', user, key);
     }
 
     _transfer(user, type, data) {

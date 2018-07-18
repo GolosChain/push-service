@@ -8,6 +8,7 @@ const Router = require('./service/Router');
 const Registrator = require('./service/Registrator');
 const Pusher = require('./service/Pusher');
 
+// TODO filtrate gate requests
 class Main extends BasicService {
     constructor() {
         super();

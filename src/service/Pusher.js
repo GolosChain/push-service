@@ -4,11 +4,21 @@ const logger = core.Logger;
 const BasicService = core.service.Basic;
 
 class Pusher extends BasicService {
+    constructor(router) {
+        super();
+
+        this._router = router;
+    }
+
     async start() {
-        // TODO -
+        this._router.on('transfer', this._broadcast);
     }
 
     async stop() {
+        // TODO -
+    }
+
+    _broadcast(user, type, data) {
         // TODO -
     }
 }
