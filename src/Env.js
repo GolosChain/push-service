@@ -2,5 +2,5 @@
 const env = process.env;
 
 module.exports = {
-    MAX_SUBSCRIBE_COUNT: env.MAX_SUBSCRIBE_COUNT
+    MAX_SUBSCRIBE_COUNT: env.MAX_SUBSCRIBE_COUNT,
 };

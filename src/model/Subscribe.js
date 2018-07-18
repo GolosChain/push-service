@@ -13,6 +13,6 @@ module.exports = MongoDB.makeModel('Subscribe', {
     },
     deviceType: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
