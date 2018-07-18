@@ -1,10 +1,18 @@
-// TODO -
+const core = require('griboyedov');
+const env = require('./Env');
+const logger = core.Logger;
+const stats = core.Stats.client;
+const BasicService = core.service.Basic;
+const MongoDB = core.service.MongoDB;
+const Registrator = require('./service/Registrator');
+const Pusher = require('./service/Pusher');
 
 class Main extends BasicService {
     constructor() {
         super();
 
-        // TODO -
+        this.printEnvBasedConfig(env);
+        this.addNested(new MongoDB(), new Pusher(), new Registrator());
         this.stopOnExit();
     }
 

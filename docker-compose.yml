@@ -10,8 +10,8 @@ services:
       - 27017:27017
     networks:
       - services-tier
-  node:
-    container_name: node
+  node-pushkin:
+    container_name: node-pushkin
     restart: always
     depends_on:
       - mongo
