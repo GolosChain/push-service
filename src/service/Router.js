@@ -29,8 +29,8 @@ class Router extends BasicService {
         return 'Ok';
     }
 
-    async _transfer(user, type, data) {
-        this.emit('transfer', user, type, data);
+    async _transfer({user=null, key=null, data}) {
+        this.emit('transfer', user, key, data);
         return 'Ok';
     }
 }

@@ -2,6 +2,7 @@ const core = require('griboyedov');
 const stats = core.Stats.client;
 const logger = core.Logger;
 const BasicService = core.service.Basic;
+const Subscribe = require('../model/Subscribe');
 
 class Pusher extends BasicService {
     constructor(router) {
@@ -18,7 +19,7 @@ class Pusher extends BasicService {
         // TODO -
     }
 
-    _broadcast(user, type, data) {
+    _broadcast(user, key, data) {
         // TODO -
     }
 }
