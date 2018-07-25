@@ -5,13 +5,14 @@ services:
     image: mongo
     restart: always
     volumes:
-      - ./db:/data/db
+      - mongodb_vol:/data/db
     ports:
-      - 27017:27017
+      - 127.0.0.1:27017:27017
     networks:
       - services-tier
-  node-pushkin:
-    container_name: node-pushkin
+
+  node:
+    container_name: node
     restart: always
     depends_on:
       - mongo
@@ -20,13 +21,19 @@ services:
       dockerfile: Dockerfile
     networks:
       - services-tier
+    ports:
+      - $GLS_GATE_HOST:$GLS_GATE_PORT:$GLS_GATE_PORT
     environment:
-      - DAY_START
-      - MONGO_CONNECT_STRING
-      - BLOCKCHAIN_SUBSCRIBE_TIMEOUT
-      - BLOCKCHAIN_NODE_ADDRESS
-      - METRICS_HOST
-      - METRICS_PORT
+      - GLS_MAX_SUBSCRIBES
+      - GLS_DAY_START
+      - GLS_MONGO_CONNECT
+      - GLS_METRICS_HOST
+      - GLS_METRICS_PORT
+      - GLS_GATE_HOST
+      - GLS_GATE_PORT
+
+volumes:
+  mongodb_vol:
 
 networks:
   services-tier:

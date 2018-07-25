@@ -1,6 +1,6 @@
 {
-    "name": "pushkin",
-    "version": "0.0.1",
+    "name": "push-service",
+    "version": "0.1.0",
     "description": "",
     "main": "./src/Main.js",
     "prettier": {
@@ -16,6 +16,8 @@
     "author": "golos.io",
     "license": "GPL-3.0",
     "dependencies": {
-        "griboyedov": "git+https://github.com/GolosChain/griboyedov.git"
+        "gls-core-service": "git+https://github.com/GolosChain/core-service.git",
+        "googleapis": "^32.0.0",
+        "request-promise-native": "^1.0.5"
     }
 }
