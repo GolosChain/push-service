@@ -76,9 +76,9 @@ class Push {
 
     async _sendPushBy(subscribes, authKey, data) {
         for (let subscribe of subscribes) {
-            const sendPack = this._filtrateByOptions(data, subscribe.options);
+            const pushData = this._filtrateByOptions(data, subscribe.options);
 
-            if (!Object.keys(sendPack).length) {
+            if (!Object.keys(pushData).length) {
                 return;
             }
 
@@ -86,7 +86,10 @@ class Push {
                 method: 'POST',
                 uri: GOOGLE_PUSH_GATE,
                 json: true,
-                body: this._makePushBody(subscribe.key, sendPack),
+                body: this._makePushBody(subscribe.key, pushData),
+                headers: {
+                    Authorization: `Bearer ${authKey}`,
+                },
             });
         }
     }
@@ -103,14 +106,11 @@ class Push {
         return result;
     }
 
-    _makePushBody(topic, body) {
+    _makePushBody(token, data) {
         return {
             message: {
-                topic,
-                notification: {
-                    title: 'GOLOS',
-                    body,
-                },
+                token,
+                data,
             },
         };
     }
