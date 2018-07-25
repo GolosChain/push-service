@@ -1,4 +1,4 @@
-const core = require('griboyedov');
+const core = require('gls-core-service');
 const MongoDB = core.service.MongoDB;
 
 module.exports = MongoDB.makeModel(
@@ -80,7 +80,7 @@ module.exports = MongoDB.makeModel(
                     user: 1,
                 },
             },
-            // Web-push search
+            // Options update and web-push search
             {
                 fields: {
                     deviceType: 1,

@@ -1,19 +1,29 @@
-const core = require('griboyedov');
+const core = require('gls-core-service');
 const BasicService = core.service.Basic;
 const Gate = core.service.Gate;
+const RegistratorHandler = require('./handler/Registrator');
+const PushHandler = require('./handler/Push');
+const OptionsHandler = require('./handler/Options');
 
 class Router extends BasicService {
     constructor() {
         super();
 
         this._gate = new Gate();
+        this._registrator = new RegistratorHandler();
+        this._push = new PushHandler();
+        this._options = new OptionsHandler();
     }
 
     async start() {
         await this._gate.start({
             serverRoutes: {
-                subscribe: this._subscribe.bind(this),
-                transfer: this._transfer.bind(this),
+                subscribe: async data => await this._registrator.register(data),
+                transfer: async data => await this._push.broadcast(data),
+                options: {
+                    get: async data => await this._options.get(data),
+                    set: async data => await this._options.set(data),
+                },
             },
         });
 
@@ -22,16 +32,6 @@ class Router extends BasicService {
 
     async stop() {
         await this.stopNested();
-    }
-
-    async _subscribe({ user, params: { key, deviceType } }) {
-        this.emit('subscribe', user, key, deviceType);
-        return 'Ok';
-    }
-
-    async _transfer({user=null, key=null, data}) {
-        this.emit('transfer', user, key, data);
-        return 'Ok';
     }
 }
 

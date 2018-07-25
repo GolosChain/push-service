@@ -1,25 +1,17 @@
-const core = require('griboyedov');
+const core = require('gls-core-service');
 const env = require('./Env');
 const logger = core.Logger;
 const stats = core.Stats.client;
 const BasicService = core.service.Basic;
 const MongoDB = core.service.MongoDB;
 const Router = require('./service/Router');
-const Registrator = require('./service/Registrator');
-const Pusher = require('./service/Pusher');
 
-// TODO filtrate gate requests
 class Main extends BasicService {
     constructor() {
         super();
 
-        const mongo = new MongoDB();
-        const router = new Router();
-        const pusher = new Pusher(router);
-        const registrator = new Registrator(router);
-
         this.printEnvBasedConfig(env);
-        this.addNested(mongo, router, pusher, registrator);
+        this.addNested(new MongoDB(), new Router());
         this.stopOnExit();
     }
 
