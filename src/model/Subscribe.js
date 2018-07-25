@@ -7,7 +7,6 @@ module.exports = MongoDB.makeModel(
         user: {
             type: String,
             required: true,
-            index: true,
         },
         keys: {
             type: String,
