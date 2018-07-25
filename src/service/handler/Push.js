@@ -1,27 +1,19 @@
 const { google } = require('googleapis');
 const request = require('request-promise-native');
-const core = require('griboyedov');
+const core = require('gls-core-service');
 const stats = core.Stats.client;
 const logger = core.Logger;
-const BasicService = core.service.Basic;
-const Subscribe = require('../model/Subscribe');
+const Subscribe = require('../../model/Subscribe');
 
 const GOOGLE_AUTH_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const GOOGLE_PUSH_GATE = 'https://fcm.googleapis.com/v1/projects/golos-5b0d5/messages:send';
 
-class Pusher extends BasicService {
-    constructor(router) {
-        super();
-
-        this._googleKey = require('../../key.json');
-        this._router = router;
+class Push {
+    constructor() {
+        this._googleKey = require('../../../key.json');
     }
 
-    async start() {
-        this._router.on('transfer', this._broadcast);
-    }
-
-    async _broadcast(user, data) {
+    async broadcast({ user, data }) {
         const time = new Date();
         let authKey;
         let subscribes;
@@ -124,4 +116,4 @@ class Pusher extends BasicService {
     }
 }
 
-module.exports = Pusher;
+module.exports = Push;

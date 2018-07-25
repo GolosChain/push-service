@@ -1,26 +1,17 @@
-const core = require('griboyedov');
+const core = require('gls-core-service');
 const stats = core.Stats.client;
 const logger = core.Logger;
-const env = require('../Env');
-const BasicService = core.service.Basic;
-const Subscribe = require('../model/Subscribe');
+const env = require('../../Env');
+const Subscribe = require('../../model/Subscribe');
 
-class Registrator extends BasicService {
-    constructor(router) {
-        super();
+class Registrator {
+    async register({ user, key, deviceType }) {
+        const time = new Date();
 
-        this._router = router;
-    }
-
-    async start() {
-        this._router.on('subscribe', this._registerSubscribe);
-    }
-
-    async _registerSubscribe(user, key, deviceType) {
         try {
             const count = await Subscribe.find({ user }).count();
 
-            if (count > env.MAX_SUBSCRIBE_COUNT) {
+            if (count > env.GLS_MAX_SUBSCRIBES) {
                 stats.increment('subscribe_max_limit');
                 return;
             }
@@ -33,6 +24,8 @@ class Registrator extends BasicService {
             logger.error(`Fail to subscribe - ${error}`);
             process.exit(1);
         }
+
+        stats.timing('register_subscribe', time - new Date());
     }
 }
 
