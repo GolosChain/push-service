@@ -20,10 +20,8 @@ class Router extends BasicService {
             serverRoutes: {
                 subscribe: async data => await this._registrator.register(data),
                 transfer: async data => await this._push.broadcast(data),
-                options: {
-                    get: async data => await this._options.get(data),
-                    set: async data => await this._options.set(data),
-                },
+                getOptions: async data => await this._options.get(data),
+                setOptions: async data => this._options.set(data),
             },
         });
 

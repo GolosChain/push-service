@@ -26,7 +26,7 @@ class Push {
             process.exit(1);
         }
 
-        if (!subscribes) {
+        if (!subscribes || !subscribes.length) {
             return;
         }
 
@@ -43,7 +43,18 @@ class Push {
         } catch (error) {
             stats.increment('google_send_push_error');
             logger.error(`Google send push - ${error}`);
-            process.exit(1);
+
+            if (error.error) {
+                const googleError = error.error.error;
+                const googleErrorDetails = JSON.stringify(googleError.details);
+
+                throw {
+                    code: googleError.code,
+                    message: `Google - ${googleError.message} - ${googleErrorDetails}`,
+                };
+            } else {
+                process.exit(1);
+            }
         }
 
         stats.timing('send_push', time - new Date());
@@ -71,27 +82,35 @@ class Push {
     }
 
     async _getUserSubscribes(user) {
-        return await Subscribe.find({ user });
+        return await Subscribe.find({ user }, { _id: false, key: true, show: true, lang: true });
     }
 
     async _sendPushBy(subscribes, authKey, data) {
         for (let subscribe of subscribes) {
-            const pushData = this._filtrateByOptions(data, subscribe.options);
+            const pushData = this._filtrateByOptions(data, subscribe.show);
 
             if (!Object.keys(pushData).length) {
                 return;
             }
 
-            await request({
-                method: 'POST',
-                uri: GOOGLE_PUSH_GATE,
-                json: true,
-                body: this._makePushBody(subscribe.key, pushData),
-                headers: {
-                    Authorization: `Bearer ${authKey}`,
-                },
-            });
+            for (let event of Object.keys(pushData)) {
+                let body = this._makePushBody(subscribe, event, pushData[event]);
+
+                await this._doPushRequest(authKey, body);
+            }
         }
+    }
+
+    async _doPushRequest(authKey, body) {
+        await request({
+            method: 'POST',
+            uri: GOOGLE_PUSH_GATE,
+            json: true,
+            body,
+            headers: {
+                Authorization: `Bearer ${authKey}`,
+            },
+        });
     }
 
     _filtrateByOptions(data, options) {
@@ -106,13 +125,21 @@ class Push {
         return result;
     }
 
-    _makePushBody(token, data) {
+    _makePushBody(subscribe, eventType, eventData) {
         return {
             message: {
-                token,
-                data,
+                token: subscribe.key,
+                notification: {
+                    title: 'GOLOS',
+                    body: this._makeMessage(subscribe.lang, eventType, eventData),
+                },
             },
         };
+    }
+
+    _makeMessage(lang, eventType, eventData) {
+        // TODO -
+        return '';
     }
 }
 
