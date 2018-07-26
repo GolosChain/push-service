@@ -17,7 +17,12 @@ module.exports = MongoDB.makeModel(
             enum: ['ios', 'android', 'web'],
             required: true,
         },
-        options: {
+        lang: {
+            type: String,
+            enum: ['ru', 'en', 'ua'],
+            default: 'ru',
+        },
+        show: {
             vote: {
                 type: Boolean,
                 default: true,
@@ -74,18 +79,20 @@ module.exports = MongoDB.makeModel(
     },
     {
         index: [
-            // Basic push broadcast
+            // Subscribe and push
             {
                 fields: {
                     user: 1,
                 },
             },
-            // Options update and web-push search
+            // Options get/set
             {
                 fields: {
-                    deviceType: 1,
-                    user: 1,
+                    key: 1,
                 },
+                options: {
+                    unique: true,
+                }
             },
         ],
     }
