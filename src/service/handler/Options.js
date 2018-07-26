@@ -3,18 +3,16 @@ const stats = core.Stats.client;
 const Subscribe = require('../../model/Subscribe');
 
 class Options {
-    async get({ user, deviceType }) {
+    async get({ key }) {
         const time = new Date();
         const result = await Subscribe.find(
             {
-                deviceType,
-                user,
+                key,
             },
             {
-                __v: false,
                 _id: false,
-                id: false,
-                options: true,
+                show: true,
+                lang: true,
             },
             {
                 lean: true,
@@ -25,27 +23,32 @@ class Options {
         return result;
     }
 
-    async set({ user, deviceType, data }) {
+    async set({ key, lang, show }) {
         const time = new Date();
 
-        await Subscribe.update(
-            {
-                deviceType,
-                user,
-            },
-            {
-                $set: {
-                    options: {
-                        $set: data,
+        try {
+            await Subscribe.update(
+                {
+                    key,
+                },
+                {
+                    $set: {
+                        show: {
+                            $set: show,
+                        },
+                        lang,
                     },
                 },
-            },
-            {
-                runValidators: true,
-            }
-        );
-
-        stats.timing('set_options', time - new Date());
+                {
+                    runValidators: true,
+                    upsert: true,
+                }
+            );
+        } catch (error) {
+            throw { code: 400, message: error.name };
+        } finally {
+            stats.timing('set_options', time - new Date());
+        }
     }
 }
 

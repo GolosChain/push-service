@@ -9,7 +9,7 @@ class Registrator {
         const time = new Date();
 
         try {
-            const count = await Subscribe.find({ user }).count();
+            const count = await Subscribe.find({ user }).countDocuments();
 
             if (count > env.GLS_MAX_SUBSCRIBES) {
                 stats.increment('subscribe_max_limit');
@@ -22,7 +22,12 @@ class Registrator {
         } catch (error) {
             stats.increment('subscribe_error');
             logger.error(`Fail to subscribe - ${error}`);
-            process.exit(1);
+
+            if (error.name === 'MongoError') {
+                throw { code: 400, message: error.message };
+            } else {
+                process.exit(1);
+            }
         }
 
         stats.timing('register_subscribe', time - new Date());
