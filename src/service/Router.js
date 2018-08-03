@@ -18,10 +18,10 @@ class Router extends BasicService {
     async start() {
         await this._gate.start({
             serverRoutes: {
-                subscribe: this._registrator.register.bind(this),
-                transfer: this._push.broadcast.bind(this),
-                getOptions: this._options.get.bind(this),
-                setOptions: this._options.set.bind(this),
+                subscribe: this._registrator.register.bind(this._registrator),
+                transfer: this._push.broadcast.bind(this._push),
+                getOptions: this._options.get.bind(this._options),
+                setOptions: this._options.set.bind(this._options),
             },
         });
 

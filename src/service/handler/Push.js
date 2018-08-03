@@ -13,9 +13,26 @@ class Push {
         this._googleKey = require('../../../key.json');
     }
 
-    async broadcast({ user, data }) {
+    async broadcast(data) {
         const time = new Date();
         let authKey;
+
+        try {
+            authKey = await this._getAuthKey();
+        } catch (error) {
+            stats.increment('google_auth_error');
+            logger.error(`Google auth - ${error}`);
+            process.exit(1);
+        }
+
+        for (let user of Object.keys(data)) {
+            await this._transferToUser(user, data, authKey);
+        }
+
+        stats.timing('send_push_list', time - new Date());
+    }
+
+    async _transferToUser(user, data, authKey) {
         let subscribes;
 
         try {
@@ -28,14 +45,6 @@ class Push {
 
         if (!subscribes || !subscribes.length) {
             return;
-        }
-
-        try {
-            authKey = await this._getAuthKey();
-        } catch (error) {
-            stats.increment('google_auth_error');
-            logger.error(`Google auth - ${error}`);
-            process.exit(1);
         }
 
         try {
@@ -56,8 +65,6 @@ class Push {
                 process.exit(1);
             }
         }
-
-        stats.timing('send_push', time - new Date());
     }
 
     _getAuthKey() {
@@ -87,17 +94,15 @@ class Push {
 
     async _sendPushBy(subscribes, authKey, data) {
         for (let subscribe of subscribes) {
-            const pushData = this._filtrateByOptions(data, subscribe.show);
+            const events = this._filtrateByOptions(data, subscribe.show);
 
-            if (!Object.keys(pushData).length) {
+            if (!Object.keys(events).length) {
                 return;
             }
 
-            for (let event of Object.keys(pushData)) {
-                let body = this._makePushBody(subscribe, event, pushData[event]);
+            let body = this._makePushBody(subscribe, events);
 
-                await this._doPushRequest(authKey, body);
-            }
+            await this._doPushRequest(authKey, body);
         }
     }
 
@@ -125,21 +130,23 @@ class Push {
         return result;
     }
 
-    _makePushBody(subscribe, eventType, eventData) {
+    _makePushBody(subscribe, events) {
+        const body = this._makeMessage(subscribe.lang, events);
+
         return {
             message: {
                 token: subscribe.key,
                 notification: {
                     title: 'GOLOS',
-                    body: this._makeMessage(subscribe.lang, eventType, eventData),
+                    body,
                 },
             },
         };
     }
 
-    _makeMessage(lang, eventType, eventData) {
+    _makeMessage(lang, events) {
         // TODO -
-        return '';
+        return 'test';
     }
 }
 
