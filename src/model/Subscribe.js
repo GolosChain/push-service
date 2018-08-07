@@ -8,13 +8,8 @@ module.exports = MongoDB.makeModel(
             type: String,
             required: true,
         },
-        key: {
+        profile: {
             type: String,
-            required: true,
-        },
-        deviceType: {
-            type: String,
-            enum: ['ios', 'android', 'web'],
             required: true,
         },
         lang: {
@@ -88,11 +83,11 @@ module.exports = MongoDB.makeModel(
             // Options get/set
             {
                 fields: {
-                    key: 1,
+                    profile: 1,
                 },
                 options: {
                     unique: true,
-                }
+                },
             },
         ],
     }
