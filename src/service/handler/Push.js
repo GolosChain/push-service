@@ -26,7 +26,7 @@ class Push {
         }
 
         for (let user of Object.keys(data)) {
-            await this._transferToUser(user, data, authKey);
+            await this._transferToUser(user, data[user], authKey);
         }
 
         stats.timing('send_push_list', time - new Date());
@@ -43,7 +43,7 @@ class Push {
             process.exit(1);
         }
 
-        if (!subscribes || !subscribes.length) {
+        if (!subscribes.length) {
             return;
         }
 
@@ -89,7 +89,10 @@ class Push {
     }
 
     async _getUserSubscribes(user) {
-        return await Subscribe.find({ user }, { _id: false, key: true, show: true, lang: true });
+        return await Subscribe.find(
+            { user },
+            { _id: false, profile: true, show: true, lang: true }
+        );
     }
 
     async _sendPushBy(subscribes, authKey, data) {
@@ -132,13 +135,21 @@ class Push {
 
     _makePushBody(subscribe, events) {
         const body = this._makeMessage(subscribe.lang, events);
+        const data = this._convertEventData(events);
+        const notification = {
+            title: 'GOLOS',
+            body,
+        };
 
         return {
             message: {
-                token: subscribe.key,
-                notification: {
-                    title: 'GOLOS',
-                    body,
+                token: subscribe.profile,
+                notification,
+                data: {
+                    body: JSON.stringify({
+                        notification,
+                        data,
+                    }),
                 },
             },
         };
@@ -146,7 +157,20 @@ class Push {
 
     _makeMessage(lang, events) {
         // TODO -
-        return 'test';
+        return 'test + data';
+    }
+
+    _convertEventData(events) {
+        const result = [];
+
+        for (let eventType of Object.keys(events)) {
+            for (let event of events[eventType]) {
+                event.eventType = eventType;
+                result.push(event);
+            }
+        }
+
+        return result;
     }
 }
 

@@ -5,7 +5,7 @@ const env = require('../../Env');
 const Subscribe = require('../../model/Subscribe');
 
 class Registrator {
-    async register({ user, key, deviceType }) {
+    async register({ user, profile, deviceType }) {
         const time = new Date();
 
         try {
@@ -16,18 +16,14 @@ class Registrator {
                 return;
             }
 
-            const model = new Subscribe({ user, key, deviceType });
+            const model = new Subscribe({ user, profile, deviceType });
 
             await model.save();
         } catch (error) {
             stats.increment('subscribe_error');
             logger.error(`Fail to subscribe - ${error}`);
 
-            if (error.name === 'MongoError') {
-                throw { code: 400, message: error.message };
-            } else {
-                process.exit(1);
-            }
+            throw { code: 400, message: error.message };
         }
 
         stats.timing('register_subscribe', time - new Date());
