@@ -85,6 +85,9 @@ module.exports = MongoDB.makeModel(
                 fields: {
                     profile: 1,
                 },
+                options: {
+                    unique: true,
+                },
             },
         ],
     }

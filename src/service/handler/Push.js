@@ -97,6 +97,10 @@ class Push {
 
     async _sendPushBy(subscribes, authKey, data) {
         for (let subscribe of subscribes) {
+            if (subscribe.profile === 'web') {
+                return;
+            }
+
             const events = this._filtrateByOptions(data, subscribe.show);
 
             if (!Object.keys(events).length) {
