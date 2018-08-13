@@ -4,6 +4,7 @@ const core = require('gls-core-service');
 const stats = core.Stats.client;
 const logger = core.Logger;
 const Subscribe = require('../../model/Subscribe');
+const Locale = require('../../Locale');
 
 const GOOGLE_AUTH_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const GOOGLE_PUSH_GATE = 'https://fcm.googleapis.com/v1/projects/golos-5b0d5/messages:send';
@@ -107,9 +108,11 @@ class Push {
                 return;
             }
 
-            let body = this._makePushBody(subscribe, events);
+            for (let eventType of Object.keys(events)) {
+                let body = this._makePushBody(subscribe, eventType, events[eventType]);
 
-            await this._doPushRequest(authKey, body);
+                await this._doPushRequest(authKey, body);
+            }
         }
     }
 
@@ -137,13 +140,14 @@ class Push {
         return result;
     }
 
-    _makePushBody(subscribe, events) {
-        const body = this._makeMessage(subscribe.lang, events);
-        const data = this._convertEventData(events);
+    _makePushBody(subscribe, eventType, eventBody) {
+        const body = this._makeMessage(subscribe.lang, eventType, eventBody);
         const notification = {
             title: 'GOLOS',
             body,
         };
+
+        eventBody.eventType = eventType;
 
         return {
             message: {
@@ -152,29 +156,21 @@ class Push {
                 data: {
                     body: JSON.stringify({
                         notification,
-                        data,
+                        eventBody,
                     }),
                 },
             },
         };
     }
 
-    _makeMessage(lang, events) {
-        // TODO -
-        return 'test + data';
-    }
+    _makeMessage(lang, eventType, eventBody) {
+        const locale = Locale.event[eventType];
 
-    _convertEventData(events) {
-        const result = [];
-
-        for (let eventType of Object.keys(events)) {
-            for (let event of events[eventType]) {
-                event.eventType = eventType;
-                result.push(event);
-            }
+        if (eventBody.counter > 1) {
+            return locale.many[lang];
+        } else {
+            return locale.one[lang];
         }
-
-        return result;
     }
 }
 
