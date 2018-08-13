@@ -109,9 +109,11 @@ class Push {
             }
 
             for (let eventType of Object.keys(events)) {
-                let body = this._makePushBody(subscribe, eventType, events[eventType]);
+                for (let eventBody of events[eventType]) {
+                    let body = this._makePushBody(subscribe, eventType, eventBody);
 
-                await this._doPushRequest(authKey, body);
+                    await this._doPushRequest(authKey, body);
+                }
             }
         }
     }
@@ -165,16 +167,13 @@ class Push {
 
     _makeMessage(lang, eventType, eventBody) {
         const locale = Locale.event[eventType];
-        const data = {
-            user: eventBody.user[0],
-            count: eventBody.counter - 1,
-            amount: eventBody.amount,
-        };
+
+        eventBody.restCount = eventBody.counter - 1;
 
         if (eventBody.counter > 1) {
-            return locale.many[lang](data);
+            return locale.many[lang](eventBody);
         } else {
-            return locale.one[lang](data);
+            return locale.one[lang](eventBody);
         }
     }
 }
