@@ -165,11 +165,16 @@ class Push {
 
     _makeMessage(lang, eventType, eventBody) {
         const locale = Locale.event[eventType];
+        const data = {
+            user: eventBody.user[0],
+            count: eventBody.counter - 1,
+            amount: eventBody.amount,
+        };
 
         if (eventBody.counter > 1) {
-            return locale.many[lang];
+            return locale.many[lang](data);
         } else {
-            return locale.one[lang];
+            return locale.one[lang](data);
         }
     }
 }
