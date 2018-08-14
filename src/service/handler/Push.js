@@ -144,22 +144,18 @@ class Push {
 
     _makePushBody(subscribe, eventType, eventBody) {
         const body = this._makeMessage(subscribe.lang, eventType, eventBody);
-        const notification = {
-            title: 'GOLOS',
-            body,
-        };
 
         eventBody.eventType = eventType;
 
         return {
             message: {
                 token: subscribe.profile,
-                notification,
+                notification: {
+                    title: 'GOLOS',
+                    body,
+                },
                 data: {
-                    body: JSON.stringify({
-                        notification,
-                        eventBody,
-                    }),
+                    body: JSON.stringify(eventBody),
                 },
             },
         };
@@ -167,13 +163,14 @@ class Push {
 
     _makeMessage(lang, eventType, eventBody) {
         const locale = Locale.event[eventType];
+        const data = Object.assign({}, eventBody);
 
-        eventBody.restCount = eventBody.counter - 1;
+        data.restCount = data.counter - 1;
 
-        if (eventBody.counter > 1) {
-            return locale.many[lang](eventBody);
+        if (data.counter > 1) {
+            return locale.many[lang](data);
         } else {
-            return locale.one[lang](eventBody);
+            return locale.one[lang](data);
         }
     }
 }
