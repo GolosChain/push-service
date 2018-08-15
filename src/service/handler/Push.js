@@ -112,22 +112,40 @@ class Push {
                 for (let eventBody of events[eventType]) {
                     let body = this._makePushBody(subscribe, eventType, eventBody);
 
-                    await this._doPushRequest(authKey, body);
+                    await this._doPushRequest(authKey, body, subscribe.profile);
                 }
             }
         }
     }
 
-    async _doPushRequest(authKey, body) {
-        await request({
-            method: 'POST',
-            uri: GOOGLE_PUSH_GATE,
-            json: true,
-            body,
-            headers: {
-                Authorization: `Bearer ${authKey}`,
-            },
-        });
+    async _doPushRequest(authKey, body, profile) {
+        try {
+            await request({
+                method: 'POST',
+                uri: GOOGLE_PUSH_GATE,
+                json: true,
+                body,
+                headers: {
+                    Authorization: `Bearer ${authKey}`,
+                },
+            });
+        } catch (error) {
+            let keyIsAlive = true;
+
+            try {
+                if (error.error.error.code === 404) {
+                    keyIsAlive = false;
+                }
+            } catch (ignore) {
+                // do nothing
+            }
+
+            if (keyIsAlive) {
+                throw error;
+            } else {
+                await Subscribe.remove({ profile });
+            }
+        }
     }
 
     _filtrateByOptions(data, options) {

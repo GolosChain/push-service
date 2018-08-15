@@ -80,7 +80,7 @@ module.exports = MongoDB.makeModel(
                     user: 1,
                 },
             },
-            // Options get/set
+            // Options get/set + remove dead token
             {
                 fields: {
                     profile: 1,
