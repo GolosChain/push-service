@@ -1,7 +1,8 @@
-const template = require('lodash.template');
+const core = require('gls-core-service');
+const Template = core.Template;
 
 // prettier-ignore
-module.exports = {
+module.exports = Template.makeFor({
     event: {
         vote: {
             one: {
@@ -134,14 +135,4 @@ module.exports = {
             },
         },
     },
-};
-
-(function initTemplate(target) {
-    for (let key of Object.keys(target)) {
-        if (typeof target[key] === 'string') {
-            target[key] = template(target[key]);
-        } else {
-            initTemplate(target[key]);
-        }
-    }
-})(module.exports);
+});

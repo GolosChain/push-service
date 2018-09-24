@@ -1,5 +1,5 @@
 const core = require('gls-core-service');
-const MongoDB = core.service.MongoDB;
+const MongoDB = core.services.MongoDB;
 
 module.exports = MongoDB.makeModel(
     'Subscribe',
@@ -74,12 +74,6 @@ module.exports = MongoDB.makeModel(
     },
     {
         index: [
-            // Subscribe and push
-            {
-                fields: {
-                    user: 1,
-                },
-            },
             // Options get/set + remove dead token
             {
                 fields: {
