@@ -1,7 +1,7 @@
 const core = require('gls-core-service');
-const stats = core.Stats.client;
-const logger = core.Logger;
-const errors = core.HttpError;
+const stats = core.statsClient;
+const logger = core.utils.Logger;
+const errors = core.httpError;
 const Subscribe = require('../../model/Subscribe');
 
 class Options {

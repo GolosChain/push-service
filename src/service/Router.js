@@ -1,6 +1,6 @@
 const core = require('gls-core-service');
-const BasicService = core.service.Basic;
-const Gate = core.service.Gate;
+const BasicService = core.services.Basic;
+const Gate = core.services.Gate;
 const PushHandler = require('./handler/Push');
 const OptionsHandler = require('./handler/Options');
 

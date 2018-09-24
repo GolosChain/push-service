@@ -1,9 +1,9 @@
 const core = require('gls-core-service');
 const env = require('./Env');
-const logger = core.Logger;
-const stats = core.Stats.client;
-const BasicService = core.service.Basic;
-const MongoDB = core.service.MongoDB;
+const logger = core.utils.Logger;
+const stats = core.statsClient;
+const BasicService = core.services.Basic;
+const MongoDB = core.services.MongoDB;
 const Router = require('./service/Router');
 
 class Main extends BasicService {
