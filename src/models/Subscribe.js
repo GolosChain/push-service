@@ -74,12 +74,6 @@ module.exports = MongoDB.makeModel(
     },
     {
         index: [
-            // Subscribe and push
-            {
-                fields: {
-                    user: 1,
-                },
-            },
             // Options get/set + remove dead token
             {
                 fields: {
