@@ -24,7 +24,6 @@ services:
     ports:
       - $GLS_GATE_HOST:$GLS_GATE_PORT:$GLS_GATE_PORT
     environment:
-      - GLS_MAX_SUBSCRIBES
       - GLS_DAY_START
       - GLS_MONGO_CONNECT
       - GLS_METRICS_HOST
