@@ -3,15 +3,15 @@ const request = require('request-promise-native');
 const core = require('gls-core-service');
 const stats = core.statsClient;
 const logger = core.utils.Logger;
-const Subscribe = require('../../model/Subscribe');
-const Locale = require('../../Locale');
+const Subscribe = require('../models/Subscribe');
+const Locale = require('../locale');
 
 const GOOGLE_AUTH_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const GOOGLE_PUSH_GATE = 'https://fcm.googleapis.com/v1/projects/golos-5b0d5/messages:send';
 
 class Push {
     constructor() {
-        this._googleKey = require('../../../key.json');
+        this._googleKey = require('../../key.json');
     }
 
     async broadcast(data) {
@@ -51,20 +51,24 @@ class Push {
         try {
             await this._sendPushBy(subscribes, authKey, data);
         } catch (error) {
-            stats.increment('google_send_push_error');
-            logger.error(`Google send push - ${error}`);
+            this._handlePushError(error);
+        }
+    }
 
-            if (error.error) {
-                const googleError = error.error.error;
-                const googleErrorDetails = JSON.stringify(googleError.details);
+    _handlePushError(error) {
+        stats.increment('google_send_push_error');
+        logger.error(`Google send push - ${error}`);
 
-                throw {
-                    code: googleError.code,
-                    message: `Google - ${googleError.message} - ${googleErrorDetails}`,
-                };
-            } else {
-                process.exit(1);
-            }
+        if (error.error) {
+            const googleError = error.error.error;
+            const googleErrorDetails = JSON.stringify(googleError.details);
+
+            throw {
+                code: googleError.code,
+                message: `Google - ${googleError.message} - ${googleErrorDetails}`,
+            };
+        } else {
+            process.exit(1);
         }
     }
 

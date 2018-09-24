@@ -2,7 +2,7 @@ const core = require('gls-core-service');
 const stats = core.statsClient;
 const logger = core.utils.Logger;
 const errors = core.httpError;
-const Subscribe = require('../../model/Subscribe');
+const Subscribe = require('../models/Subscribe');
 
 class Options {
     async get({ user, profile }) {
