@@ -96,13 +96,13 @@ class Push {
     async _getUserSubscribes(user) {
         return await Subscribe.find(
             { user },
-            { _id: false, profile: true, show: true, lang: true }
+            { _id: false, profile: true, key: true, show: true, lang: true }
         );
     }
 
     async _sendPushBy(subscribes, authKey, data) {
         for (let subscribe of subscribes) {
-            if (subscribe.profile === 'web') {
+            if (!subscribe.key) {
                 continue;
             }
 
@@ -171,7 +171,7 @@ class Push {
 
         return {
             message: {
-                token: subscribe.profile,
+                token: subscribe.key,
                 notification: {
                     title: 'GOLOS',
                     body,

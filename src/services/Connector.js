@@ -17,6 +17,8 @@ class Connector extends BasicConnector {
                 transfer: this._push.broadcast.bind(this._push),
                 getOptions: this._options.get.bind(this._options),
                 setOptions: this._options.set.bind(this._options),
+                notifyOn: '', // TODO -
+                notifyOff: '', // TODO -
             },
         });
     }

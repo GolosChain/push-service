@@ -12,6 +12,10 @@ module.exports = MongoDB.makeModel(
             type: String,
             required: true,
         },
+        key: {
+            type: String,
+            required: true,
+        },
         lang: {
             type: String,
             enum: ['ru', 'en', 'ua'],
