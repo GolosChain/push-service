@@ -1,7 +1,7 @@
 const { google } = require('googleapis');
 const request = require('request-promise-native');
 const core = require('gls-core-service');
-const stats = core.statsClient;
+const stats = core.utils.statsClient;
 const logger = core.utils.Logger;
 const Subscribe = require('../models/Subscribe');
 const Locale = require('../locale');
