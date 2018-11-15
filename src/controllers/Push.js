@@ -4,7 +4,7 @@ const core = require('gls-core-service');
 const stats = core.utils.statsClient;
 const logger = core.utils.Logger;
 const Subscribe = require('../models/Subscribe');
-const Locale = require('../locale');
+const Locale = require('../data/locale');
 
 const GOOGLE_AUTH_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const GOOGLE_PUSH_GATE = 'https://fcm.googleapis.com/v1/projects/golos-5b0d5/messages:send';

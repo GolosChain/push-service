@@ -1,5 +1,5 @@
 const core = require('gls-core-service');
-const Template = core.Template;
+const Template = core.utils.Template;
 
 // prettier-ignore
 module.exports = Template.makeFor({
@@ -84,24 +84,24 @@ module.exports = Template.makeFor({
                 en: '${reposter} and ${restCount} others have reposted your post. 😎',
             },
         },
-        award: {
+        reward: {
             one: {
-                ru: '',
-                en: '',
+                ru: 'Ваша авторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
+                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your author rewards 💸',
             },
             many: {
-                ru: '',
-                en: '',
+                ru: 'Ваша авторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
+                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your author rewards 💸',
             },
         },
-        curatorAward: {
+        curatorReward: {
             one: {
-                ru: '',
-                en: '',
+                ru: 'Ваша кураторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
+                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your curation rewards 💸',
             },
             many: {
-                ru: '',
-                en: '',
+                ru: 'Ваша кураторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
+                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your curation rewards 💸',
             },
         },
         message: {
