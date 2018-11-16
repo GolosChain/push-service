@@ -95,29 +95,23 @@ class Push {
 
     async _getUserSubscribes(user) {
         return await Subscribe.find(
-            { user },
+            { user, key: { $exists: true, $nin: [null, ''] } },
             { _id: false, profile: true, key: true, show: true, lang: true }
         );
     }
 
     async _sendPushBy(subscribes, authKey, data) {
         for (let subscribe of subscribes) {
-            if (!subscribe.key) {
-                continue;
-            }
-
             const events = this._filtrateByOptions(data, subscribe.show);
 
-            if (!Object.keys(events).length) {
+            if (!events.length) {
                 return;
             }
 
-            for (let eventType of Object.keys(events)) {
-                for (let eventBody of events[eventType]) {
-                    let body = this._makePushBody(subscribe, eventType, eventBody);
+            for (let event of events) {
+                let body = this._makePushBody(subscribe, event);
 
-                    await this._doPushRequest(authKey, body, subscribe.profile);
-                }
+                await this._doPushRequest(authKey, body, subscribe.profile);
             }
         }
     }
@@ -153,21 +147,19 @@ class Push {
     }
 
     _filtrateByOptions(data, options) {
-        let result = {};
+        let result = [];
 
-        for (let type of Object.keys(data)) {
-            if (options[type]) {
-                result[type] = data[type];
+        for (let event of data) {
+            if (options[event.eventType]) {
+                result.push(event);
             }
         }
 
         return result;
     }
 
-    _makePushBody(subscribe, eventType, eventBody) {
-        const body = this._makeMessage(subscribe.lang, eventType, eventBody);
-
-        eventBody.eventType = eventType;
+    _makePushBody(subscribe, event) {
+        const body = this._makeMessage(subscribe.lang, event);
 
         return {
             message: {
@@ -177,19 +169,19 @@ class Push {
                     body,
                 },
                 data: {
-                    body: JSON.stringify(eventBody),
+                    body: JSON.stringify(event),
                 },
             },
         };
     }
 
-    _makeMessage(lang, eventType, eventBody) {
-        const locale = Locale.event[eventType];
-        const data = Object.assign({}, eventBody);
+    _makeMessage(lang, event) {
+        const locale = Locale.event[event.eventType];
+        const data = Object.assign({}, event);
 
-        data.restCount = data.counter - 1;
+        data.fromUsers = data.fromUsers || [];
 
-        if (data.counter > 1) {
+        if (data.fromUsers.length > 1) {
             return locale.many[lang](data);
         } else {
             return locale.one[lang](data);

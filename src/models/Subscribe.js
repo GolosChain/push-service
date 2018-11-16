@@ -53,11 +53,11 @@ module.exports = MongoDB.makeModel(
                 type: Boolean,
                 default: true,
             },
-            award: {
+            reward: {
                 type: Boolean,
                 default: true,
             },
-            curatorAward: {
+            curatorReward: {
                 type: Boolean,
                 default: true,
             },
