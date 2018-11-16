@@ -111,12 +111,12 @@ class Push {
             for (let event of events) {
                 let body = this._makePushBody(subscribe, event);
 
-                await this._doPushRequest(authKey, body, subscribe.profile);
+                await this._doPushRequest(authKey, body, subscribe);
             }
         }
     }
 
-    async _doPushRequest(authKey, body, profile) {
+    async _doPushRequest(authKey, body, { user, profile }) {
         try {
             await request({
                 method: 'POST',
@@ -141,7 +141,7 @@ class Push {
             if (keyIsAlive) {
                 throw error;
             } else {
-                await Subscribe.remove({ profile });
+                await Subscribe.update({ user, profile }, { $set: { key: null } });
             }
         }
     }
