@@ -12,6 +12,9 @@ module.exports = MongoDB.makeModel(
             type: String,
             required: true,
         },
+        key: {
+            type: String,
+        },
         lang: {
             type: String,
             enum: ['ru', 'en', 'ua'],
@@ -50,11 +53,11 @@ module.exports = MongoDB.makeModel(
                 type: Boolean,
                 default: true,
             },
-            award: {
+            reward: {
                 type: Boolean,
                 default: true,
             },
-            curatorAward: {
+            curatorReward: {
                 type: Boolean,
                 default: true,
             },

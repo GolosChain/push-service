@@ -1,10 +1,10 @@
 const { google } = require('googleapis');
 const request = require('request-promise-native');
 const core = require('gls-core-service');
-const stats = core.statsClient;
+const stats = core.utils.statsClient;
 const logger = core.utils.Logger;
 const Subscribe = require('../models/Subscribe');
-const Locale = require('../locale');
+const Locale = require('../data/locale');
 
 const GOOGLE_AUTH_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const GOOGLE_PUSH_GATE = 'https://fcm.googleapis.com/v1/projects/golos-5b0d5/messages:send';
@@ -95,34 +95,28 @@ class Push {
 
     async _getUserSubscribes(user) {
         return await Subscribe.find(
-            { user },
-            { _id: false, profile: true, show: true, lang: true }
+            { user, key: { $exists: true, $nin: [null, ''] } },
+            { _id: false, profile: true, key: true, show: true, lang: true }
         );
     }
 
     async _sendPushBy(subscribes, authKey, data) {
         for (let subscribe of subscribes) {
-            if (subscribe.profile === 'web') {
-                continue;
-            }
-
             const events = this._filtrateByOptions(data, subscribe.show);
 
-            if (!Object.keys(events).length) {
+            if (!events.length) {
                 return;
             }
 
-            for (let eventType of Object.keys(events)) {
-                for (let eventBody of events[eventType]) {
-                    let body = this._makePushBody(subscribe, eventType, eventBody);
+            for (let event of events) {
+                let body = this._makePushBody(subscribe, event);
 
-                    await this._doPushRequest(authKey, body, subscribe.profile);
-                }
+                await this._doPushRequest(authKey, body, subscribe);
             }
         }
     }
 
-    async _doPushRequest(authKey, body, profile) {
+    async _doPushRequest(authKey, body, { user, profile }) {
         try {
             await request({
                 method: 'POST',
@@ -147,49 +141,47 @@ class Push {
             if (keyIsAlive) {
                 throw error;
             } else {
-                await Subscribe.remove({ profile });
+                await Subscribe.update({ user, profile }, { $set: { key: null } });
             }
         }
     }
 
     _filtrateByOptions(data, options) {
-        let result = {};
+        let result = [];
 
-        for (let type of Object.keys(data)) {
-            if (options[type]) {
-                result[type] = data[type];
+        for (let event of data) {
+            if (options[event.eventType]) {
+                result.push(event);
             }
         }
 
         return result;
     }
 
-    _makePushBody(subscribe, eventType, eventBody) {
-        const body = this._makeMessage(subscribe.lang, eventType, eventBody);
-
-        eventBody.eventType = eventType;
+    _makePushBody(subscribe, event) {
+        const body = this._makeMessage(subscribe.lang, event);
 
         return {
             message: {
-                token: subscribe.profile,
+                token: subscribe.key,
                 notification: {
                     title: 'GOLOS',
                     body,
                 },
                 data: {
-                    body: JSON.stringify(eventBody),
+                    body: JSON.stringify(event),
                 },
             },
         };
     }
 
-    _makeMessage(lang, eventType, eventBody) {
-        const locale = Locale.event[eventType];
-        const data = Object.assign({}, eventBody);
+    _makeMessage(lang, event) {
+        const locale = Locale.event[event.eventType];
+        const data = Object.assign({}, event);
 
-        data.restCount = data.counter - 1;
+        data.fromUsers = data.fromUsers || [];
 
-        if (data.counter > 1) {
+        if (data.fromUsers.length > 1) {
             return locale.many[lang](data);
         } else {
             return locale.one[lang](data);
