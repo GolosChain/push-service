@@ -6,15 +6,15 @@ const Subscribe = require('../models/Subscribe');
 
 class Options {
     async get({ user, profile }) {
-        const time = new Date();
+        const time = Date.now();
         const model = await this._findOrCreateSubscribe(user, profile);
 
-        stats.timing('get_options', time - new Date());
+        stats.timing('get_options', time - Date.now());
         return { lang: model.lang, show: model.show };
     }
 
     async set({ user, profile, data }) {
-        const time = new Date();
+        const time = Date.now();
 
         try {
             const model = await this._findOrCreateSubscribe(user, profile);
@@ -24,7 +24,7 @@ class Options {
 
             await model.save();
 
-            stats.timing('set_options', new Date() - time);
+            stats.timing('set_options', Date.now() - time);
         } catch (error) {
             logger.error(error);
             stats.increment('options_invalid_request');

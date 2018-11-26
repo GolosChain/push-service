@@ -15,7 +15,7 @@ class Push {
     }
 
     async broadcast(data) {
-        const time = new Date();
+        const time = Date.now();
         let authKey;
 
         try {
@@ -30,7 +30,7 @@ class Push {
             await this._transferToUser(user, data[user], authKey);
         }
 
-        stats.timing('send_push_list', time - new Date());
+        stats.timing('send_push_list', Date.now() - time);
     }
 
     async _transferToUser(user, data, authKey) {
@@ -147,15 +147,7 @@ class Push {
     }
 
     _filtrateByOptions(data, options) {
-        let result = [];
-
-        for (let event of data) {
-            if (options[event.eventType]) {
-                result.push(event);
-            }
-        }
-
-        return result;
+        return data.filter(event => options[event.eventType]);
     }
 
     _makePushBody(subscribe, event) {
