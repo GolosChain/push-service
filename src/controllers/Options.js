@@ -9,7 +9,7 @@ class Options {
         const time = Date.now();
         const model = await this._findOrCreateSubscribe(user, profile);
 
-        stats.timing('get_options', time - Date.now());
+        stats.timing('get_options', Date.now() - time);
         return { lang: model.lang, show: model.show };
     }
 
