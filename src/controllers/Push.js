@@ -96,7 +96,7 @@ class Push {
     async _getUserSubscribes(user) {
         return await Subscribe.find(
             { user, key: { $exists: true, $nin: [null, ''] } },
-            { _id: false, profile: true, key: true, show: true, lang: true }
+            { _id: false, user: true, profile: true, key: true, show: true, lang: true }
         );
     }
 
