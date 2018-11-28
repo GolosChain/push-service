@@ -105,7 +105,7 @@ class Push {
             const events = this._filtrateByOptions(data, subscribe.show);
 
             if (!events.length) {
-                return;
+                continue;
             }
 
             for (let event of events) {
