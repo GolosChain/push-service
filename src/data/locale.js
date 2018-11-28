@@ -96,12 +96,12 @@ module.exports = Template.makeFor({
         },
         curatorReward: {
             one: {
-                ru: 'Ваша кураторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
-                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your curation rewards 💸',
+                ru: 'Ваша кураторская награда ${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power 💸',
+                en: '${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power your curation rewards 💸',
             },
             many: {
-                ru: 'Ваша кураторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
-                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your curation rewards 💸',
+                ru: 'Ваша кураторская награда ${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power 💸',
+                en: '${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power your curation rewards 💸',
             },
         },
         message: {
