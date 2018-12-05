@@ -96,7 +96,7 @@ class Push {
     async _getUserSubscribes(user) {
         return await Subscribe.find(
             { user, key: { $exists: true, $nin: [null, ''] } },
-            { _id: false, profile: true, key: true, show: true, lang: true }
+            { _id: false, user: true, profile: true, key: true, show: true, lang: true }
         );
     }
 
@@ -105,7 +105,7 @@ class Push {
             const events = this._filtrateByOptions(data, subscribe.show);
 
             if (!events.length) {
-                return;
+                continue;
             }
 
             for (let event of events) {

@@ -1,7 +1,6 @@
 const core = require('gls-core-service');
-const stats = core.statsClient;
+const stats = core.utils.statsClient;
 const logger = core.utils.Logger;
-const errors = core.httpError;
 const Subscribe = require('../models/Subscribe');
 
 class Options {
@@ -9,7 +8,7 @@ class Options {
         const time = Date.now();
         const model = await this._findOrCreateSubscribe(user, profile);
 
-        stats.timing('get_options', time - Date.now());
+        stats.timing('get_options', Date.now() - time);
         return { lang: model.lang, show: model.show };
     }
 
@@ -28,7 +27,7 @@ class Options {
         } catch (error) {
             logger.error(error);
             stats.increment('options_invalid_request');
-            throw errors.E400.error;
+            throw { code: 400, message: 'Invalid options' };
         }
     }
 
