@@ -35,7 +35,7 @@ class History extends BasicController {
             throw { code: 404, message: 'Not found' };
         }
 
-        for (let type of Object.keys(options.show)) {
+        for (const type of Object.keys(options.show)) {
             if (options.show[type]) {
                 result.push(type);
             }

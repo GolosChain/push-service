@@ -26,7 +26,7 @@ class Push {
             process.exit(1);
         }
 
-        for (let user of Object.keys(data)) {
+        for (const user of Object.keys(data)) {
             await this._transferToUser(user, data[user], authKey);
         }
 
@@ -101,14 +101,14 @@ class Push {
     }
 
     async _sendPushBy(subscribes, authKey, data) {
-        for (let subscribe of subscribes) {
+        for (const subscribe of subscribes) {
             const events = this._filtrateByOptions(data, subscribe.show);
 
             if (!events.length) {
                 continue;
             }
 
-            for (let event of events) {
+            for (const event of events) {
                 let body = this._makePushBody(subscribe, event);
 
                 await this._doPushRequest(authKey, body, subscribe);
