@@ -3,9 +3,24 @@ const BasicController = core.controllers.Basic;
 const Model = require('../models/Subscribe');
 
 class History extends BasicController {
-    async getHistory({ user, afterId = null, limit = 10, markAsViewed = true, freshOnly = false }) {
-        const types = await this._getUserRequiredTypes(user);
-        const params = { user, types, fromId: afterId, limit, markAsViewed, freshOnly };
+    async getHistory({
+        user,
+        profile,
+        afterId = null,
+        types,
+        limit = 10,
+        markAsViewed = true,
+        freshOnly = false,
+    }) {
+        const filteredTypes = await this._filterTypes(user, profile, types);
+        const params = {
+            user,
+            types: filteredTypes,
+            fromId: afterId,
+            limit,
+            markAsViewed,
+            freshOnly,
+        };
         const response = await this.sendTo('notify', 'history', params);
 
         if (response.error) {
@@ -15,8 +30,8 @@ class History extends BasicController {
         }
     }
 
-    async getHistoryFresh({ user }) {
-        const types = await this._getUserRequiredTypes(user);
+    async getHistoryFresh({ user, profile }) {
+        const types = await this._getUserRequiredTypes(user, profile);
         const params = { user, types };
         const response = await this.sendTo('notify', 'historyFresh', params);
 
@@ -27,9 +42,31 @@ class History extends BasicController {
         }
     }
 
-    async _getUserRequiredTypes(user) {
+    async _filterTypes(user, profile, types) {
+        const byOptions = await this._getUserRequiredTypes(user, profile);
+
+        if (!types || types === 'all') {
+            return byOptions;
+        }
+
+        const byRequest = new Set(types);
         const result = [];
-        const options = await Model.findOne({ user }, { show: true }, { lean: true });
+
+        for (const i of byOptions) {
+            for (const j of byRequest) {
+                if (i === j) {
+                    result.push(i);
+                    byRequest.delete(i);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    async _getUserRequiredTypes(user, profile) {
+        const result = [];
+        const options = await Model.findOne({ user, profile }, { show: true }, { lean: true });
 
         if (!options || !options.show) {
             throw { code: 404, message: 'Not found' };
