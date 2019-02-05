@@ -21,25 +21,15 @@ class History extends BasicController {
             markAsViewed,
             freshOnly,
         };
-        const response = await this.sendTo('notify', 'history', params);
 
-        if (response.error) {
-            throw response.error;
-        } else {
-            return response.result;
-        }
+        return this.callService('notify', 'onlineNotify.history', params);
     }
 
     async getHistoryFresh({ user, profile }) {
         const types = await this._getUserRequiredTypes(user, profile);
         const params = { user, types };
-        const response = await this.sendTo('notify', 'historyFresh', params);
 
-        if (response.error) {
-            throw response.error;
-        } else {
-            return response.result;
-        }
+        return this.callService('notify', 'onlineNotify.historyFresh', params);
     }
 
     async _filterTypes(user, profile, types) {
