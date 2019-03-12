@@ -21,11 +21,11 @@ module.exports = MongoDB.makeModel(
             default: 'ru',
         },
         show: {
-            vote: {
+            upvote: {
                 type: Boolean,
                 default: true,
             },
-            flag: {
+            downvote: {
                 type: Boolean,
                 default: true,
             },
