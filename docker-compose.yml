@@ -1,7 +1,7 @@
 version: '2.1'
 services:
-  online-notify-mongo:
-    container_name: online-notify-mongo
+  push-mongo:
+    container_name: push-mongo
     image: mongo
     restart: always
     healthcheck:
@@ -31,11 +31,11 @@ services:
     networks:
       - services-tier
 
-  online-notify-node:
+  push-node:
     container_name: online-notify-node
     restart: always
     depends_on:
-      - online-notify-mongo
+      - push-mongo
     build:
       context: .
       dockerfile: Dockerfile
