@@ -22,14 +22,14 @@ class History extends BasicController {
             freshOnly,
         };
 
-        return this.callService('notify', 'onlineNotify.history', params);
+        return this.callService('notify', 'history', params);
     }
 
     async getHistoryFresh({ user, profile }) {
         const types = await this._getUserRequiredTypes(user, profile);
         const params = { user, types };
 
-        return this.callService('notify', 'onlineNotify.historyFresh', params);
+        return this.callService('notify', 'historyFresh', params);
     }
 
     async _filterTypes(user, profile, types) {
@@ -56,10 +56,14 @@ class History extends BasicController {
 
     async _getUserRequiredTypes(user, profile) {
         const result = [];
-        const options = await Model.findOne({ user, profile }, { show: true }, { lean: true });
+        let options = await Model.findOne({ user, profile }, { show: true }, { lean: true });
 
-        if (!options || !options.show) {
-            throw { code: 404, message: 'Not found' };
+        if (!options) {
+            // throw { code: 404, message: 'Not found' };
+            const newModel = new Model({user, profile})
+            await newModel.save()
+            options  = newModel.toObject()
+
         }
 
         for (const type of Object.keys(options.show)) {
