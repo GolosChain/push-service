@@ -4,7 +4,7 @@ const Template = core.Template;
 // prettier-ignore
 module.exports = Template.makeFor({
     event: {
-        vote: {
+        upvote: {
             one: {
                 ru: '${voter} оценил вашу запись. 👍',
                 en: '${voter} liked your entry. 👍',
@@ -14,7 +14,7 @@ module.exports = Template.makeFor({
                 en: '${voter} and ${restCount} others liked your entry. 👍',
             },
         },
-        flag: {
+        downvote: {
             one: {
                 ru: '${voter} негативно оценил ваш запись. 😵',
                 en: '${voter} disliked your entry. 😵',
