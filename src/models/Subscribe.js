@@ -82,11 +82,18 @@ module.exports = MongoDB.makeModel(
     },
     {
         index: [
-            // Options get/set + remove dead token
+            // Api search
             {
                 fields: {
                     user: 1,
                     profile: 1,
+                    app: 1,
+                },
+            },
+            // Broadcast search
+            {
+                fields: {
+                    user: 1,
                     app: 1,
                 },
             },

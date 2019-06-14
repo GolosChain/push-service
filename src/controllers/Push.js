@@ -14,7 +14,7 @@ class Push {
         this._googleKey = require('../../key.json');
     }
 
-    async broadcast(data) {
+    async broadcast(messageObject) {
         const time = Date.now();
         let authKey;
 
@@ -26,18 +26,18 @@ class Push {
             process.exit(1);
         }
 
-        for (const user of Object.keys(data)) {
-            await this._transferToUser(user, data[user], authKey);
+        for (const user of Object.keys(messageObject)) {
+            await this._transferToUser(user, messageObject[user], authKey);
         }
 
         stats.timing('send_push_list', Date.now() - time);
     }
 
-    async _transferToUser(user, data, authKey) {
+    async _transferToUser(user, { app, data }, authKey) {
         let subscribes;
 
         try {
-            subscribes = await this._getUserSubscribes(user);
+            subscribes = await this._getUserSubscribes(user, app);
         } catch (error) {
             stats.increment('options_get_error');
             logger.error(`Options get - ${error}`);
@@ -49,7 +49,7 @@ class Push {
         }
 
         try {
-            await this._sendPushBy(subscribes, authKey, data);
+            await this._sendPushBy({ app, subscribes, authKey, data });
         } catch (error) {
             this._handlePushError(error);
         }
@@ -93,14 +93,14 @@ class Push {
         });
     }
 
-    async _getUserSubscribes(user) {
+    async _getUserSubscribes(user, app) {
         return await Subscribe.find(
-            { user, key: { $exists: true, $nin: [null, ''] } },
+            { user, app, key: { $exists: true, $nin: [null, ''] } },
             { _id: false, user: true, profile: true, key: true, show: true, lang: true }
         );
     }
 
-    async _sendPushBy(subscribes, authKey, data) {
+    async _sendPushBy({ app, subscribes, authKey, data }) {
         for (const subscribe of subscribes) {
             const events = this._filtrateByOptions(data, subscribe.show);
 
@@ -111,12 +111,12 @@ class Push {
             for (const event of events) {
                 let body = this._makePushBody(subscribe, event);
 
-                await this._doPushRequest(authKey, body, subscribe);
+                await this._doPushRequest({ app, authKey, body, subscribe });
             }
         }
     }
 
-    async _doPushRequest(authKey, body, { user, profile }) {
+    async _doPushRequest({ app, authKey, body, subscribe: { user, profile } }) {
         try {
             await request({
                 method: 'POST',
@@ -141,7 +141,7 @@ class Push {
             if (keyIsAlive) {
                 throw error;
             } else {
-                await Subscribe.update({ user, profile }, { $set: { key: null } });
+                await Subscribe.update({ user, profile, app }, { $set: { key: null } });
             }
         }
     }
