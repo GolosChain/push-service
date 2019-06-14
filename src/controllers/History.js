@@ -6,13 +6,14 @@ class History extends BasicController {
     async getHistory({
         user,
         profile,
+        app,
         afterId = null,
         types,
         limit = 10,
         markAsViewed = true,
         freshOnly = false,
     }) {
-        const filteredTypes = await this._filterTypes(user, profile, types);
+        const filteredTypes = await this._filterTypes({ user, profile, app }, types);
         const params = {
             user,
             types: filteredTypes,
@@ -25,15 +26,15 @@ class History extends BasicController {
         return this.callService('notify', 'history', params);
     }
 
-    async getHistoryFresh({ user, profile }) {
-        const types = await this._getUserRequiredTypes(user, profile);
+    async getHistoryFresh({ user, profile, app }) {
+        const types = await this._getUserRequiredTypes({ user, profile, app });
         const params = { user, types };
 
         return this.callService('notify', 'historyFresh', params);
     }
 
-    async _filterTypes(user, profile, types) {
-        const byOptions = await this._getUserRequiredTypes(user, profile);
+    async _filterTypes({ user, profile, app }, types) {
+        const byOptions = await this._getUserRequiredTypes({ user, profile, app });
 
         if (!types || types === 'all') {
             return byOptions;
@@ -54,16 +55,16 @@ class History extends BasicController {
         return result;
     }
 
-    async _getUserRequiredTypes(user, profile) {
+    async _getUserRequiredTypes({ user, profile, app }) {
         const result = [];
-        let options = await Model.findOne({ user, profile }, { show: true }, { lean: true });
+        let options = await Model.findOne({ user, profile, app }, { show: true }, { lean: true });
 
         if (!options) {
-            // throw { code: 404, message: 'Not found' };
-            const newModel = new Model({user, profile})
-            await newModel.save()
-            options  = newModel.toObject()
+            const newModel = new Model({ user, profile, app });
 
+            await newModel.save();
+
+            options = newModel.toObject();
         }
 
         for (const type of Object.keys(options.show)) {
