@@ -3,16 +3,7 @@ const BasicController = core.controllers.Basic;
 const Model = require('../models/Subscribe');
 
 class History extends BasicController {
-    async getHistory({
-        user,
-        profile,
-        app,
-        afterId = null,
-        types,
-        limit = 10,
-        markAsViewed = true,
-        freshOnly = false,
-    }) {
+    async getHistory({ user, profile, app, afterId, types, limit, markAsViewed, freshOnly }) {
         const filteredTypes = await this._filterTypes({ user, profile, app }, types);
         const params = {
             user,
@@ -23,20 +14,20 @@ class History extends BasicController {
             freshOnly,
         };
 
-        return this.callService('notify', 'history', params);
+        return await this.callService('notify', 'history', params);
     }
 
     async getHistoryFresh({ user, profile, app }) {
         const types = await this._getUserRequiredTypes({ user, profile, app });
         const params = { user, types };
 
-        return this.callService('notify', 'historyFresh', params);
+        return await this.callService('notify', 'historyFresh', params);
     }
 
     async _filterTypes({ user, profile, app }, types) {
         const byOptions = await this._getUserRequiredTypes({ user, profile, app });
 
-        if (!types || types === 'all') {
+        if (types.includes('all')) {
             return byOptions;
         }
 

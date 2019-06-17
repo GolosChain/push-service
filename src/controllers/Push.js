@@ -1,7 +1,6 @@
 const { google } = require('googleapis');
 const request = require('request-promise-native');
 const core = require('gls-core-service');
-const stats = core.utils.statsClient;
 const logger = core.utils.Logger;
 const Subscribe = require('../models/Subscribe');
 const Locale = require('../data/locale');
@@ -15,13 +14,11 @@ class Push {
     }
 
     async broadcast(messageObject) {
-        const time = Date.now();
         let authKey;
 
         try {
             authKey = await this._getAuthKey();
         } catch (error) {
-            stats.increment('google_auth_error');
             logger.error(`Google auth - ${error}`);
             process.exit(1);
         }
@@ -33,8 +30,6 @@ class Push {
                 await this._transferToUser({ user, app, authKey, data });
             }
         }
-
-        stats.timing('send_push_list', Date.now() - time);
     }
 
     async _transferToUser({ user, app, authKey, data }) {
@@ -43,7 +38,6 @@ class Push {
         try {
             subscribes = await this._getUserSubscribes(user, app);
         } catch (error) {
-            stats.increment('options_get_error');
             logger.error(`Options get - ${error}`);
             process.exit(1);
         }
@@ -60,7 +54,6 @@ class Push {
     }
 
     _handlePushError(error) {
-        stats.increment('google_send_push_error');
         logger.error(`Google send push - ${error}`);
 
         if (error.error) {

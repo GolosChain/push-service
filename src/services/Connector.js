@@ -42,7 +42,7 @@ class Connector extends BasicConnector {
                                         lang: {
                                             type: 'string',
                                             enum: ['en', 'ru'],
-                                            default: 'ru',
+                                            default: 'en',
                                         },
                                         show: {
                                             type: 'object',
@@ -159,6 +159,7 @@ class Connector extends BasicConnector {
                                         'witnessVote',
                                         'witnessCancelVote',
                                     ],
+                                    default: ['all'],
                                 },
                             },
                             limit: {
