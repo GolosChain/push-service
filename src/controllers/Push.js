@@ -1,7 +1,6 @@
 const { google } = require('googleapis');
 const request = require('request-promise-native');
 const core = require('gls-core-service');
-const stats = core.utils.statsClient;
 const logger = core.utils.Logger;
 const Subscribe = require('../models/Subscribe');
 const Locale = require('../data/locale');
@@ -14,32 +13,31 @@ class Push {
         this._googleKey = require('../../key.json');
     }
 
-    async broadcast(data) {
-        const time = Date.now();
+    async broadcast(messageObject) {
         let authKey;
 
         try {
             authKey = await this._getAuthKey();
         } catch (error) {
-            stats.increment('google_auth_error');
             logger.error(`Google auth - ${error}`);
             process.exit(1);
         }
 
-        for (const user of Object.keys(data)) {
-            await this._transferToUser(user, data[user], authKey);
-        }
+        for (const app of Object.keys(messageObject)) {
+            for (const user of Object.keys(messageObject[app])) {
+                const data = messageObject[app][user];
 
-        stats.timing('send_push_list', Date.now() - time);
+                await this._transferToUser({ user, app, authKey, data });
+            }
+        }
     }
 
-    async _transferToUser(user, data, authKey) {
+    async _transferToUser({ user, app, authKey, data }) {
         let subscribes;
 
         try {
-            subscribes = await this._getUserSubscribes(user);
+            subscribes = await this._getUserSubscribes(user, app);
         } catch (error) {
-            stats.increment('options_get_error');
             logger.error(`Options get - ${error}`);
             process.exit(1);
         }
@@ -49,14 +47,13 @@ class Push {
         }
 
         try {
-            await this._sendPushBy(subscribes, authKey, data);
+            await this._sendPushBy({ app, subscribes, authKey, data });
         } catch (error) {
             this._handlePushError(error);
         }
     }
 
     _handlePushError(error) {
-        stats.increment('google_send_push_error');
         logger.error(`Google send push - ${error}`);
 
         if (error.error) {
@@ -93,14 +90,14 @@ class Push {
         });
     }
 
-    async _getUserSubscribes(user) {
+    async _getUserSubscribes(user, app) {
         return await Subscribe.find(
-            { user, key: { $exists: true, $nin: [null, ''] } },
+            { user, app, key: { $exists: true, $nin: [null, ''] } },
             { _id: false, user: true, profile: true, key: true, show: true, lang: true }
         );
     }
 
-    async _sendPushBy(subscribes, authKey, data) {
+    async _sendPushBy({ app, subscribes, authKey, data }) {
         for (const subscribe of subscribes) {
             const events = this._filtrateByOptions(data, subscribe.show);
 
@@ -111,12 +108,12 @@ class Push {
             for (const event of events) {
                 let body = this._makePushBody(subscribe, event);
 
-                await this._doPushRequest(authKey, body, subscribe);
+                await this._doPushRequest({ app, authKey, body, subscribe });
             }
         }
     }
 
-    async _doPushRequest(authKey, body, { user, profile }) {
+    async _doPushRequest({ app, authKey, body, subscribe: { user, profile } }) {
         try {
             await request({
                 method: 'POST',
@@ -141,7 +138,7 @@ class Push {
             if (keyIsAlive) {
                 throw error;
             } else {
-                await Subscribe.update({ user, profile }, { $set: { key: null } });
+                await Subscribe.update({ user, profile, app }, { $set: { key: null } });
             }
         }
     }

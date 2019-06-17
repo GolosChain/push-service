@@ -84,7 +84,7 @@ module.exports = Template.makeFor({
                 en: '${reposter} and ${restCount} others have reposted your post. 😎',
             },
         },
-        award: {
+        reward: {
             one: {
                 ru: '',
                 en: '',
@@ -94,17 +94,7 @@ module.exports = Template.makeFor({
                 en: '',
             },
         },
-        curatorAward: {
-            one: {
-                ru: '',
-                en: '',
-            },
-            many: {
-                ru: '',
-                en: '',
-            },
-        },
-        message: {
+        curatorReward: {
             one: {
                 ru: '',
                 en: '',

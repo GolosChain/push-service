@@ -20,6 +20,11 @@ module.exports = MongoDB.makeModel(
             enum: ['ru', 'en', 'ua'],
             default: 'ru',
         },
+        app: {
+            type: String,
+            enum: ['gls', 'cyber'],
+            default: 'cyber',
+        },
         show: {
             upvote: {
                 type: Boolean,
@@ -77,10 +82,19 @@ module.exports = MongoDB.makeModel(
     },
     {
         index: [
-            // Options get/set + remove dead token
+            // Api search
             {
                 fields: {
+                    user: 1,
                     profile: 1,
+                    app: 1,
+                },
+            },
+            // Broadcast search
+            {
+                fields: {
+                    user: 1,
+                    app: 1,
                 },
             },
         ],
