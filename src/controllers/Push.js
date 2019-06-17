@@ -26,14 +26,18 @@ class Push {
             process.exit(1);
         }
 
-        for (const user of Object.keys(messageObject)) {
-            await this._transferToUser(user, messageObject[user], authKey);
+        for (const app of Object.keys(messageObject)) {
+            for (const user of Object.keys(messageObject[app])) {
+                const data = messageObject[app][user];
+
+                await this._transferToUser({ user, app, authKey, data });
+            }
         }
 
         stats.timing('send_push_list', Date.now() - time);
     }
 
-    async _transferToUser(user, { app, data }, authKey) {
+    async _transferToUser({ user, app, authKey, data }) {
         let subscribes;
 
         try {
