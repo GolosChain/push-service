@@ -104,16 +104,6 @@ module.exports = Template.makeFor({
                 en: '${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power your curation rewards 💸',
             },
         },
-        message: {
-            one: {
-                ru: '',
-                en: '',
-            },
-            many: {
-                ru: '',
-                en: '',
-            },
-        },
         witnessVote: {
             one: {
                 ru: '${fromUsers[0]} проголосовал за вас как за делегата. 🔥',

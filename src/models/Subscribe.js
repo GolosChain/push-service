@@ -66,10 +66,6 @@ module.exports = MongoDB.makeModel(
                 type: Boolean,
                 default: true,
             },
-            message: {
-                type: Boolean,
-                default: true,
-            },
             witnessVote: {
                 type: Boolean,
                 default: true,
