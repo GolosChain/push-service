@@ -7,6 +7,7 @@ class History extends BasicController {
         const filteredTypes = await this._filterTypes({ user, profile, app }, types);
         const params = {
             user,
+            app,
             types: filteredTypes,
             fromId: afterId,
             limit,
@@ -19,7 +20,7 @@ class History extends BasicController {
 
     async getHistoryFresh({ user, profile, app }) {
         const types = await this._getUserRequiredTypes({ user, profile, app });
-        const params = { user, types };
+        const params = { user, app, types };
 
         return await this.callService('notify', 'historyFresh', params);
     }

@@ -89,10 +89,6 @@ class Connector extends BasicConnector {
                                                         type: 'boolean',
                                                         default: true,
                                                     },
-                                                    message: {
-                                                        type: 'boolean',
-                                                        default: true,
-                                                    },
                                                     witnessVote: {
                                                         type: 'boolean',
                                                         default: true,
@@ -155,7 +151,6 @@ class Connector extends BasicConnector {
                                         'repost',
                                         'reward',
                                         'curatorReward',
-                                        'message',
                                         'witnessVote',
                                         'witnessCancelVote',
                                     ],
