@@ -36,7 +36,6 @@ class Connector extends BasicConnector {
                         properties: {
                             data: {
                                 type: 'object',
-                                additionalProperties: false,
                                 validation: {
                                     properties: {
                                         lang: {
