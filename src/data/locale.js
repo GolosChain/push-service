@@ -26,12 +26,12 @@ module.exports = Template.makeFor({
         },
         transfer: {
             one: {
-                ru: '${fromUsers[0]} перевел на ваш счет ${amount}. 💸',
-                en: '${fromUsers[0]} has transferred to your account ${amount}. 💸',
+                ru: '${fromUsers[0]} перевел на ваш счет ${value.amount}. 💸',
+                en: '${fromUsers[0]} has transferred to your account ${value.amount}. 💸',
             },
             many: {
-                ru: '${fromUsers[0]} и еще ${fromUsers.length} перевели на ваш счет ${amount}. 💸',
-                en: '${fromUsers[0]} and ${fromUsers.length} others were transferred to your ${amount} account. 💸',
+                ru: '${fromUsers[0]} и еще ${fromUsers.length} перевели на ваш счет ${value.amount}. 💸',
+                en: '${fromUsers[0]} and ${fromUsers.length} others were transferred to your ${value.amount} account. 💸',
             },
         },
         reply: {
