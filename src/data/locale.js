@@ -86,22 +86,32 @@ module.exports = Template.makeFor({
         },
         reward: {
             one: {
-                ru: 'Ваша авторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
-                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your author rewards 💸',
+                ru: 'Ваша авторская награда ${value.amount} ${value.currency} 💸',
+                en: '${value.amount} ${value.currency} your author rewards 💸',
             },
             many: {
-                ru: 'Ваша авторская награда ${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power 💸',
-                en: '${reward.golos} GOLOS, ${reward.gbg} GBG, ${reward.golosPower} Golos Power your author rewards 💸',
+                ru: 'Ваша авторская награда ${value.amount} ${value.currency} 💸',
+                en: '${value.amount} ${value.currency} your author rewards 💸',
             },
         },
         curatorReward: {
             one: {
-                ru: 'Ваша кураторская награда ${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power 💸',
-                en: '${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power your curation rewards 💸',
+                ru: 'Ваша кураторская награда ${value.amount} ${value.currency} 💸',
+                en: '${value.amount} ${value.currency} your curation rewards 💸',
             },
             many: {
-                ru: 'Ваша кураторская награда ${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power 💸',
-                en: '${curatorReward.golos} GOLOS, ${curatorReward.gbg} GBG, ${curatorReward.golosPower} Golos Power your curation rewards 💸',
+                ru: 'Ваша кураторская награда ${value.amount} ${value.currency} 💸',
+                en: '${value.amount} ${value.currency} your curation rewards 💸',
+            },
+        },
+        benefeciaryReward: {
+            one: {
+                ru: 'Ваша бенефициарская награда ${value.amount} ${value.currency} 💸',
+                en: '${value.amount} ${value.currency} your benefeciary rewards 💸',
+            },
+            many: {
+                ru: 'Ваша бенефициарская награда ${value.amount} ${value.currency} 💸',
+                en: '${value.amount} ${value.currency} your benefeciary rewards 💸',
             },
         },
         witnessVote: {
