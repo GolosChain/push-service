@@ -39,6 +39,7 @@ setOptions:
             repost <boolean>             // репост
             reward <boolean>             // награда пользователю
             curatorReward <boolean>      // награда куратору
+            benefeciaryReward <boolean>  // награда бенефициару
             witnessVote <boolean>        // голос за делегата
             witnessCancelVote <boolean>  // отмена голоса за делегата
 
@@ -87,6 +88,7 @@ history:
         | repost                       // репост
         | reward                       // награда пользователю
         | curatorReward                // награда куратору
+        | benefeciaryReward            // награда бенефициару
         | witnessVote                  // голос за делегата
         | witnessCancelVote            // отмена голоса за делегата
         ]
