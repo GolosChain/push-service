@@ -154,6 +154,7 @@ class Connector extends BasicConnector {
                                         'repost',
                                         'reward',
                                         'curatorReward',
+                                        'benefeciaryReward',
                                         'witnessVote',
                                         'witnessCancelVote',
                                     ],
