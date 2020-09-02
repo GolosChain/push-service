@@ -28,7 +28,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "gls-core-service": "^2.9.1",
-    "googleapis": "^32.0.0",
+    "googleapis": "^39.1.0",
     "lodash.template": "^4.4.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5"
